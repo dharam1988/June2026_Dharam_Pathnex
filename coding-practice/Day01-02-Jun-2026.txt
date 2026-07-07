@@ -1,0 +1,109 @@
+---
+- name: install nginx on pathnex server
+  host: all
+  become: yes
+
+  tasks:
+    - name: install Nginx
+      yum:
+        name: nginx
+        state: present       
+
+##Terraform Task — Create EC2 (c5.xlarge)  
+
+provider "aws" {
+  region = "us-east-1"
+  }
+
+  resource "aws_instance" "pathnexEC2"{
+    ami    ="ami_0abcd1234defg5678"
+    instance_type = "c5.xlarge"
+
+   tags ={
+   name ="pathnex-EC2"
+   } 
+  }
+
+## Kubernetes task = create Nginx pod
+
+apiversion: v1
+kind : pod 
+metadata: 
+   name: pathnex-pod
+   spac :
+     containers:
+       - name: web
+       image: nginx:latest
+       ports:
+         -containerport: 80
+
+# Git Integration
+## Jenkins Pipeline - Checkout Git
+You will learn how to **checkout a Git repository** and list files.
+
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Pathnex/sample-java-app.git'
+            }
+        }
+        stage('List Files') {
+            steps {
+                sh 'ls -la'
+            }
+        }
+    }
+}  
+
+# Git intergration
+## jenkins Pipeline - checkout Git
+you will learn how to **checkout a Git repository** and list files.
+
+pipeline {
+    agent any
+    stages {
+        stage('checkout') {
+        steps {
+             git branch: 'main', url: 'https://github.com/pathnex/sample-java-app.git'
+            }
+    }
+    stage('list file') {
+        steps {
+            sh 'ls -la'
+        }
+
+      }
+
+    }
+    
+}
+
+
+## GitLab CI - Checkout Git
+You will learn how to **checkout a Git repository in GitLab CI**.
+
+stages:
+  - checkout
+
+git-checkout:
+  stage: checkout
+  script:
+    - git clone https://github.com/Pathnex/sample-java-app.git
+    - cd sample-java-app
+    - ls -la
+
+## GitLab CI - Checkout Git
+you will learn how to **checkout a Git repository in GitLab CI**.
+
+stages:
+   -checkout
+
+   git-checkout:
+     stage: checkout
+     Script:
+     - git clone https://github.com/Pathnex/sample-java-app.git
+     - cd sample-java-app
+     - ls -la
+
