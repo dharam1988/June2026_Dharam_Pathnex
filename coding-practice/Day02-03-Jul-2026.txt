@@ -1,0 +1,160 @@
+## Ancible : install & enable nginix
+
+---
+ - name: install and start nginix on Pathnex
+   host : all
+   become: yes
+
+   tasks:
+     -name: install nginx
+      yum:
+        name: nginx
+        state: present
+
+     -name: Enable nginx
+      services :
+         name: nginx
+         state: started
+         enable: yes       
+
+##  Terraform - EC2 with Tags (r2.2xlarge)
+
+Provider "aws" {
+    region = "us-east-1"
+}
+
+resource "aws_instance" "PathnexEC2" {
+    ami     ="abdc12345ndjfm34567"
+    instance_type ="r2_2xlarge"
+
+    tags ={
+      Name = "Pathnex_server"
+      Enviroment = "Training"
+      owner = "PathnexStudent"  
+    }
+}
+
+
+## Kubernetes - Deployment with 2 replicas
+
+apiversion: apps/v1
+Kind: Deployment
+metadata:
+    name: Pathnex-deployment
+ spac:
+   replicas: 2
+   Selector:
+     matchLabels:
+        app: pathnex-app
+  template:
+     metadata:
+       labels:
+       app: pathnex-app
+     apec:
+       containers:
+          -name: app
+           image: nginx
+          ports:
+             -containerport: 80   
+
+
+
+# Maven Build
+## Jenkins Pipeline - Maven Build
+You will learn how to **compile, test, and package a Java project** using Maven.
+
+pipeline {
+    agent any
+    tools {
+        maven 'Maven-3.8.1'
+        jdk 'JDK-17'
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                git url: 'https://github.com/Pathnex/sample-java-app.git'
+            }
+        }
+        stage('Compile') {
+            steps {
+                sh 'mvn clean compile'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+        stage('Package') {
+            steps {
+                sh 'mvn package'
+            }
+        }
+    }
+}
+
+# Mavan
+## Jenkins pipeline - Maven Build
+you will learn how to how to **complie, test and package a jave project** using maven
+
+pipeline {
+      agent any
+      tools{
+        maven : 'Maven-3.8.1'
+        jdk : JDK-17 
+      }
+      stages {
+        stage('checkout') {
+            steps {
+                git url: 'https://github.com/Pathnex/sample-java-app.git'
+            }
+        }
+        stages (copmpile) {
+          steps {
+               sh 'clean maven compile'
+          }
+        }
+        stages('Test') {
+            steps {
+                sh 'mvn teat'
+            }
+        } 
+
+        stages ('package') {
+            steps {
+                sh 'mvn package'
+            }
+
+        }         
+      }
+    
+}
+
+##  GitLab CI - Maven Build
+
+stages:
+  - build
+  - test
+  - package
+
+maven-build:
+  stage: build
+  image: maven:3.8.1-jdk-17
+  script:
+    - git clone https://github.com/Pathnex/sample-java-app.git
+    - cd sample-java-app
+    - mvn clean compile
+
+maven-test:
+  stage: test
+  image: maven:3.8.1-jdk-17
+  script:
+    - cd sample-java-app
+    - mvn test
+
+maven-package:
+  stage: package
+  image: maven:3.8.1-jdk-17
+  script:
+    - cd sample-java-app
+    - mvn package
