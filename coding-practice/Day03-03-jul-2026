@@ -1,0 +1,158 @@
+## Ancible user Create
+
+---
+- name: create pathnex user
+  host: all
+  become: yes
+
+  tasks:
+    - name: create user pathnex admin
+      User:
+        name: Pathnex-admin
+        shell: /bin/bash
+
+## Terraform - Security group (r6i.4xlarge EC2)
+
+provider "aws" {
+    region = "us-east-1"
+}
+
+resource "aws_security_group" "PathnexSG"{
+ Name     = "PathnexSG"
+ description = "PathnexSG for SSH"     
+
+ ingress {
+    from port = 22
+    toport = 22
+    protocaol = "tcp"
+    cidr_block = ["0.0.0.0/0"]
+    }
+  }
+
+  resource "ec2_instance" "pathnexec2" {
+     ami = "asdfndj123244jfhfh"
+     instance_type = "r6i.4xlarge"
+     vpc_security_group_id = [aws_security_group.pathnexSG.id]
+
+     tag = {
+       name = "Pathnex-EC2"
+     }
+  }
+
+ 
+## Kubernetes - add Environment variables 
+
+apiversion : v1
+kind : pod
+metadata:
+   name: pathnex-env-pod
+spec:
+   containers:
+       -name: app
+       -image: nginx
+       env:
+          -name: APP_ENV
+           value: "production" // Ineternallt use as key value pair and internally run like echo $APP_ENV and output is production
+
+# env means Environment Variables.
+
+# These are configuration values passed to the application inside the container.           
+
+# NodeJS Build
+## Jenkins Pipeline - NodeJS Build
+You will learn how to **install dependencies, run tests, and build a NodeJS project**.
+
+pipeline {
+    agent any
+    tools {
+        nodejs 'NodeJS-16'
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                git url: 'https://github.com/Pathnex/sample-node-app.git'
+            }
+        }
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+        stage('Run Tests') {
+            steps {
+                sh 'npm test'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+    }
+}
+
+## Nodejd Build
+## jenkins pipeline - Nodejs build
+## we will learn how to ** install the dependiencies,test and build a nodejs project**
+
+pipeline {
+     agent any
+     tools {
+        nodejs 'Node-JS-16'
+     }
+     Stages {
+         stage ('Checkout') {
+            steps {
+                git url: 'https://github.com/Pathnex/sample-node-app.git'
+            }
+         }
+
+         stage ('Install Dependencies') {
+                steps {
+                    sh 'npm install'
+                }
+
+         }
+
+         stage('Run Tests') {
+            steps {
+                sh 'npm test'
+            }
+         }
+
+         stage('Build') {
+            steps {
+                sh 'npm run Build'
+            }
+         }
+
+     }
+}
+
+
+## Gitlab CI - NodeJS Build
+
+stages:
+  -install
+  -test
+  -build
+
+ node-install: 
+   stage: Install
+   image: node:16
+   script:
+      - git clone https://github.com/Pathnex/sample-node-app.git
+      -cd sample-node-app
+      -npm install
+  node-test:
+    stage: test
+    image: node:16
+    script:
+        -cd sample-node-app
+        -npm test    
+  node-build:
+     stage: build
+     image: node-16
+     script:
+       -cd ample-node-app
+       -npm run build
