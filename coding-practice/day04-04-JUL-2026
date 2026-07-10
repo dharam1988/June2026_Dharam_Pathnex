@@ -1,0 +1,57 @@
+## Jenkins pipeline - parameterized
+we will learn here how to **create parameterized buils in jenkins**.
+
+pipeline {
+    agent any
+    parameters {
+         string (name: 'ENVIRONMENT', defaultvalue: 'DEV', description: 'Deployment Environment')
+    }
+    environment {
+        Institute_Name = 'pathnex'
+            }
+     stages {
+        stage ('Checkout') {
+            steps {
+                 git url: 'https://github.com/Pathnex/sample-java-app.git'
+            }
+        }
+        stage ('Deploy') {
+            steps {
+                 sh 'echo "Deployment to $ENVIRONMENT BY $iNSTITUTE_nAME" '
+            }
+        }
+     }       
+
+}
+
+## GitLab CI - Parameterized via Variables
+You will learn how to **use variables to parameterize GitLab jobs**.
+
+stages:
+  - deploy
+
+variables:
+  INSTITUTE_NAME: "Pathnex"
+  ENVIRONMENT: "dev"
+
+deploy:
+  stage: deploy
+  image: alpine:latest
+  script:
+    - echo "Deploying to $ENVIRONMENT by $INSTITUTE_NAME"
+
+
+## GitLab CI - Parameterized via Variables
+You will learn here how to ** "use variable to parameterize Github Jobs" **
+stages:
+  - Deploy
+
+  variables:
+    INSTITITE_NAME: "Pathnex"
+    ENVIRONMENT : "dev"
+
+  deploy:
+    stage: deploy
+    image : alpine:latest
+    script:
+     - echo "Deployment to $ENVIROMNENT by $Institute_Name"  
