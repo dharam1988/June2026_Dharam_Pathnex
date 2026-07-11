@@ -1,0 +1,173 @@
+## Ansible - Handler to Restart Nginx
+
+---
+ - name: Manage Nginx
+   hosts: all
+   become: yes
+
+   tasks:
+     - name : update config file
+       copy:
+         src: index.html
+         dest: /usr/share/nginx/html/index.html
+         notify: Restart Nginx
+
+   handlers:
+      - name: Restart Nginx
+        service:
+          name: nginx
+          state: restarted     
+
+## Terraform - EC2 with User Data (c6a.12xlarge)
+provider "aws" {
+    region= us-east-1
+}
+
+resource: "EC2_instance" "pathnexEC2"{
+    ami = asdcv12345fgbfvv
+    instance_type = c6a.12xlarge
+
+    user_data = <<EOF
+#!/bin/bash
+yum install -y httpd
+systemctl start httpd
+EOF
+
+    tag = {
+      Name = "pathnex-EC2"
+    }
+}
+
+## Kubernetes - Resource Limits
+
+apiversion: v1
+Kind : pod
+metadata : 
+   name : pathnex-limit-pod
+spec:
+  containers:
+     - name: app
+      image: nginx
+      resources:
+         limits:
+            memory: "250Mi"
+            cpu: "500m"
+
+This is a Kubernetes Pod YAML.
+
+The purpose of this YAML is to:
+
+Create a Pod.
+Run an Nginx container inside the Pod.
+Limit how much CPU and Memory the container can use.
+
+This is commonly used in production so that one application cannot consume all the resources of a Kubernetes node.
+
+
+
+## Jenkins Pipeline - Use Environment Variables
+You will learn how to **use environment variables in Jenkins pipelines**.
+
+pipeline {
+    agent any
+    environment {
+        INSTITUTE_NAME = "Pathnex"
+    }
+    stages {
+        stage('Print') {
+            steps {
+                sh 'echo "Welcome to $INSTITUTE_NAME DevOps Training"'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'mvn clean package -Dinstitute.name=$INSTITUTE_NAME'
+            }
+        }
+    }
+}
+
+## jankins Pipeline - use enviroment variables
+you will learn how to **use enviroment variable in jenkins pipelines*
+
+Pipeline {
+    agent any
+    enviroment {
+        Institute_Name = "Pathnex"
+    }
+    stages {
+        stage('print') {
+            steps{
+                sh 'echo "welcome to $Institute_Name Devops Training"'
+            }
+        stage('Build')
+            steps {
+                sh 'mvn clear package -Dinstitute.name=$Institute_Name'
+            }    
+        }
+    }
+}
+
+
+Suppose your Java application contains:
+
+String institute = System.getProperty("institute.name");
+
+System.out.println(institute);
+
+When Jenkins runs:
+
+mvn clean package -Dinstitute.name=Pathnex
+
+
+## Gitlab CI - Use environmentat vatiable
+you will learn how to **use CI variables in Gitlab pipeline**
+
+stages:
+  - build
+
+Variables:
+    Institute_Name : "pathnex"
+
+buils:
+  stage: build
+  image: maven:3.8.1-jdk-17
+  script:
+     - git clone https://github.com/Pathnex/sample-java-app.git
+     - cd sample-java-app
+     - echo "Welcome to $Institute_Name Devops tranning"
+     - mvn clear package -Dinstitute.name=$INSTITUTE_NAME     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
